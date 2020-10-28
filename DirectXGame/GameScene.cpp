@@ -11,6 +11,7 @@ GameScene::~GameScene()
 {
 	safe_delete(spriteBG);
 	safe_delete(object3d);
+	safe_delete(ball);
 }
 
 void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio * audio)
@@ -33,7 +34,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio * audio)
 	debugText.Initialize(debugTextTexNumber);
 
 	// テクスチャ読み込み
-	if (!Sprite::LoadTexture(1, L"Resources/background.png")) {
+	if (!Sprite::LoadTexture(1, L"Resources/backGroundSky.png")) {
 		assert(0);
 		return;
 	}
@@ -42,25 +43,29 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio * audio)
 	// 3Dオブジェクト生成
 	object3d = Object3d::Create();
 	object3d->Update();
+
+	//ボール生成
+	ball = Ball::Create();
+	ball->Update();
 }
 
 void GameScene::Update()
 {
-	// オブジェクト移動
-	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
-	{
-		// 現在の座標を取得
-		XMFLOAT3 position = object3d->GetPosition();
+	//// オブジェクト移動
+	//if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	//{
+	//	// 現在の座標を取得
+	//	XMFLOAT3 position = object3d->GetPosition();
 
-		// 移動後の座標を計算
-		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
-		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
-		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
-		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+	//	// 移動後の座標を計算
+	//	if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
+	//	else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
+	//	if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
+	//	else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
 
-		// 座標の変更を反映
-		object3d->SetPosition(position);
-	}
+	//	// 座標の変更を反映
+	//	object3d->SetPosition(position);
+	//}
 
 	// カメラ移動
 	if (input->PushKey(DIK_W) || input->PushKey(DIK_S) || input->PushKey(DIK_D) || input->PushKey(DIK_A))
@@ -71,7 +76,24 @@ void GameScene::Update()
 		else if (input->PushKey(DIK_A)) { Object3d::CameraMoveVector({ -1.0f,0.0f,0.0f }); }
 	}
 
-	object3d->Update();
+	//object3d->Update();
+
+	// ボール移動
+	if (input->PushKey(DIK_UP) || input->PushKey(DIK_DOWN) || input->PushKey(DIK_RIGHT) || input->PushKey(DIK_LEFT))
+	{
+		// 現在の座標を取得
+		XMFLOAT3 position = ball->GetPosition();
+
+		// 移動後の座標を計算
+		if (input->PushKey(DIK_UP)) { position.y += 1.0f; }
+		else if (input->PushKey(DIK_DOWN)) { position.y -= 1.0f; }
+		if (input->PushKey(DIK_RIGHT)) { position.x += 1.0f; }
+		else if (input->PushKey(DIK_LEFT)) { position.x -= 1.0f; }
+
+		// 座標の変更を反映
+		ball->SetPosition(position);
+	}
+	ball->Update();
 }
 
 void GameScene::Draw()
@@ -99,8 +121,14 @@ void GameScene::Draw()
 	// 3Dオブジェクト描画前処理
 	Object3d::PreDraw(cmdList);
 
+	//ボール描画前処理
+	Ball::PreDraw(cmdList);
+
 	// 3Dオブクジェクトの描画
 	object3d->Draw();
+
+	//ボールの描画
+	ball->Draw();
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
@@ -108,6 +136,9 @@ void GameScene::Draw()
 
 	// 3Dオブジェクト描画後処理
 	Object3d::PostDraw();
+
+	//ボール描画後処理
+	Ball::PostDraw();
 #pragma endregion
 
 #pragma region 前景スプライト描画

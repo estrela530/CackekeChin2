@@ -45,6 +45,13 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 		assert(0);
 		return 1;
 	}
+
+	// ボールの静的初期化
+	if (!Ball::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
+		assert(0);
+		return 1;
+	}
+
 #pragma endregion
 
 	// ゲームシーンの初期化
