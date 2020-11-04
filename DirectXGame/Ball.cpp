@@ -105,6 +105,10 @@ Ball * Ball::Create()
 		return nullptr;
 	}
 
+	//スケールをセット
+	float scale_val = 20;
+	ball->scale = { scale_val,scale_val, scale_val };
+
 	return ball;
 }
 
@@ -410,7 +414,7 @@ void Ball::CreateModel()
 	//ファイルストリーム
 	std::ifstream file;
 	//.objファイルを開く
-	file.open("Resources/triangle/triangle.obj");
+	file.open("Resources/model/3Dmodel.obj");
 	//ファイルオープン失敗をチェック
 	if (file.fail())
 	{
