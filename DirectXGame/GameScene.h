@@ -9,12 +9,16 @@
 #include "Object3d2.h"
 #include "DebugText.h"
 #include "Audio.h"
+<<<<<<< HEAD
 #include "Ball.h"
+=======
+#include "BaseScene.h"
+>>>>>>> origin/SHURERE
 
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene
+class GameScene:public BaseScene///ベースシーン
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -25,10 +29,12 @@ private: // エイリアス
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
 
+
 private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
+#pragma region// メンバ関数
 
-public: // メンバ関数
+public: 
 
 	/// <summary>
 	/// コンストクラタ
@@ -43,18 +49,23 @@ public: // メンバ関数
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio);
+	virtual void Initialize(DirectXCommon* dxCommon, Input* input, Audio* audio) override;
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
+//	void Initialize();
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	virtual void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	virtual void Draw() override;
 
+#pragma endregion 
 private: // メンバ変数
 	DirectXCommon* dxCommon = nullptr;
 	Input* input = nullptr;
