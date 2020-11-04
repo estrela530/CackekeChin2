@@ -46,6 +46,12 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 		return 1;
 	}
 
+	// 3Dオブジェクト2静的初期化
+	if (!Object3d2::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
+		assert(0);
+		return 1;
+	}
+
 	// ボールの静的初期化
 	if (!Ball::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
 		assert(0);
