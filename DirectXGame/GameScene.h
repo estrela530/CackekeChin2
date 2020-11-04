@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Sprite.h"
 #include "Object3d.h"
+#include "Object3d2.h"
 #include "DebugText.h"
 #include "Audio.h"
 #include "Ball.h"
@@ -66,5 +67,6 @@ private: // メンバ変数
 	Sprite* spriteBG = nullptr;
 	Object3d* object3d = nullptr;
 	Ball* ball = nullptr;
+	Object3d2* object3d2 = nullptr;
 };
 

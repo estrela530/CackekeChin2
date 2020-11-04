@@ -10,7 +10,7 @@ using namespace Microsoft::WRL;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const float Object3d2::radius = 5.0f;				// 底面の半径
+const float Object3d2::radius2 = 5.0f;				// 底面の半径
 const float Object3d2::prizmHeight = 8.0f;			// 柱の高さ
 ID3D12Device* Object3d2::device = nullptr;
 UINT Object3d2::descriptorHandleIncrementSize = 0;
@@ -409,8 +409,8 @@ void Object3d2::CreateModel()
 		for (int i = 0; i < division; i++)
 		{
 			XMFLOAT3 vertex;
-			vertex.x = radius * sinf(XM_2PI / division * i);
-			vertex.y = radius * cosf(XM_2PI / division * i);
+			vertex.x = radius2 * sinf(XM_2PI / division * i);
+			vertex.y = radius2 * cosf(XM_2PI / division * i);
 			vertex.z = zValue;
 			realVertices[index++].pos = vertex;
 		}
@@ -420,8 +420,8 @@ void Object3d2::CreateModel()
 		for (int i = 0; i < division; i++)
 		{
 			XMFLOAT3 vertex;
-			vertex.x = radius * sinf(XM_2PI / division * i);
-			vertex.y = radius * cosf(XM_2PI / division * i);
+			vertex.x = radius2 * sinf(XM_2PI / division * i);
+			vertex.y = radius2 * cosf(XM_2PI / division * i);
 			vertex.z = zValue;
 			realVertices[index++].pos = vertex;
 		}
@@ -605,30 +605,30 @@ void Object3d2::Update()
 	XMMATRIX matScale, matRot, matTrans;
 
 	// スケール、回転、平行移動行列の計算
-	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matScale = XMMatrixScaling(scale2.x, scale2.y, scale2.z);
 	matRot = XMMatrixIdentity();
-	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
-	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
-	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation2.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation2.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation2.y));
+	matTrans = XMMatrixTranslation(position2.x, position2.y, position2.z);
 
 	// ワールド行列の合成
-	matWorld = XMMatrixIdentity(); // 変形をリセット
-	matWorld *= matScale; // ワールド行列にスケーリングを反映
-	matWorld *= matRot; // ワールド行列に回転を反映
-	matWorld *= matTrans; // ワールド行列に平行移動を反映
+	matWorld2 = XMMatrixIdentity(); // 変形をリセット
+	matWorld2 *= matScale; // ワールド行列にスケーリングを反映
+	matWorld2 *= matRot; // ワールド行列に回転を反映
+	matWorld2 *= matTrans; // ワールド行列に平行移動を反映
 
 	// 親オブジェクトがあれば
-	if (parent != nullptr) {
+	if (parent2 != nullptr) {
 		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
+		matWorld2 *= parent2->matWorld2;
 	}
 
 	// 定数バッファへデータ転送
 	ConstBufferData* constMap = nullptr;
 	result = constBuff->Map(0, nullptr, (void**)&constMap);
-	constMap->color = color;
-	constMap->mat = matWorld * matView * matProjection;	// 行列の合成
+	constMap->color = color2;
+	constMap->mat = matWorld2 * matView * matProjection;	// 行列の合成
 	constBuff->Unmap(0, nullptr);
 }
 
