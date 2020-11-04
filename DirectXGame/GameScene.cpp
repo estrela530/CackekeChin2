@@ -1,4 +1,6 @@
 ﻿#include "GameScene.h"
+#include"SceneManager.h"
+#include "BaseScene.h"
 #include <cassert>
 
 using namespace DirectX;
@@ -24,10 +26,11 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Audio * audio)
 	this->input = input;
 	this->audio = audio;
 
+
 	// デバッグテキスト用テクスチャ読み込み
 	if (!Sprite::LoadTexture(debugTextTexNumber, L"Resources/debugfont.png")) {
 		assert(0);
-		return ;
+		return;
 	}
 	// デバッグテキスト初期化
 	debugText.Initialize(debugTextTexNumber);
@@ -77,7 +80,8 @@ void GameScene::Update()
 void GameScene::Draw()
 {
 	// コマンドリストの取得
-	ID3D12GraphicsCommandList* cmdList = dxCommon->GetCommandList();
+	ID3D12GraphicsCommandList* cmdList =
+		dxCommon->GetCommandList();
 
 #pragma region 背景スプライト描画
 	// 背景スプライト描画前処理

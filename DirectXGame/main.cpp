@@ -2,21 +2,26 @@
 #include "DirectXCommon.h"
 #include "Audio.h"
 #include "GameScene.h"
+#include "SceneManager.h"
+#include "BaseScene.h"
+#include "TitleScene.h"
 
 // Windowsアプリでのエントリーポイント(main関数)
-int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
+int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	// 汎用機能
 	WinApp* win = nullptr;
 	DirectXCommon* dxCommon = nullptr;
-	Input* input = nullptr;	
+	Input* input = nullptr;
 	Audio* audio = nullptr;
-	GameScene* gameScene = nullptr;
+
+	//GameScene* gameScene = nullptr;
+	SceneManager* sceneManager = nullptr;//追加した
 
 	// ゲームウィンドウの作成
 	win = new WinApp();
 	win->CreateGameWindow();
-		
+
 	//DirectX初期化処理
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(win);
@@ -35,42 +40,57 @@ int WINAPI WinMain(HINSTANCE,HINSTANCE,LPSTR,int)
 		return 1;
 	}
 	// スプライト静的初期化
-	if (!Sprite::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
+	if (!Sprite::StaticInitialize(dxCommon->GetDevice(),
+		WinApp::window_width, WinApp::window_height)) {
 		assert(0);
 		return 1;
 	}
-	
+
 	// 3Dオブジェクト静的初期化
-	if (!Object3d::StaticInitialize(dxCommon->GetDevice(), WinApp::window_width, WinApp::window_height)) {
+	if (!Object3d::StaticInitialize(dxCommon->GetDevice(),
+		WinApp::window_width, WinApp::window_height)) {
 		assert(0);
 		return 1;
 	}
 #pragma endregion
 
 	// ゲームシーンの初期化
-	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon, input, audio);
-	
+	//gameScene = new GameScene();
+	//gameScene->Initialize(dxCommon, input, audio);
+	//シーンマネージャーの初期化
+	//gameScene->Initialize(dxCommon, input, audio);
+	sceneManager = new SceneManager();//追加ーーーー
+	sceneManager->Init(dxCommon, input, audio);
+
+	sceneManager->AddScene(SCENE::TITLE, new TitleScene());
+	sceneManager->AddScene(SCENE::GAME, new GameScene());
+	sceneManager->ChangeScene(TITLE);
+
 	// メインループ
 	while (true)
 	{
 		// メッセージ処理
-		if (win->ProcessMessage()) {	break; }
+		if (win->ProcessMessage()) { break; }
 
 		// 入力関連の毎フレーム処理
 		input->Update();
 		// ゲームシーンの毎フレーム処理
-		gameScene->Update();
-
+		sceneManager->Update();
+		//sceneManager->Updata();
 		// 描画開始
 		dxCommon->PreDraw();
-		// ゲームシーンの描画
-		gameScene->Draw();
+		// シーンの描画
+		//gameScene->Draw();
+		sceneManager->Draw();
+
 		// 描画終了
 		dxCommon->PostDraw();
 	}
+
 	// 各種解放
-	safe_delete(gameScene);
+	//safe_delete(gameScene);
+	safe_delete(sceneManager);
+
 	safe_delete(audio);
 	safe_delete(input);
 	safe_delete(dxCommon);
